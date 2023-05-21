@@ -13,22 +13,25 @@ export const createFlagsProxy = (ffsUpdate = false) => {
         get(target, prop, receiver) {
             if (typeof prop === 'string' && !prop.startsWith('__v_')) {
                 var variant = fbClient.variation(prop, flagsDefaultValues[prop] || '');
+
                 if (ffsUpdate === true) {
                     window.DATAFLUX_RUM && window.DATAFLUX_RUM.addAction('FeatBit Update FFs', {
                         FeatBitProject: window.featbitProject,
                         FeatBitEnv: window.featbitEnv,
                         FeatBitUserInfo: window.currentFFUser,
-                        FeatBitFeatureFlagKey: prop,
-                        FeatBitFeatureFlagVariant: variant,
+                        FeatBitFFVariant: '' + variant,
+                        FeatBitFFKey: prop ,
                     });
+                    console.log(`ffUpdate ${prop}: ${variant}`);
                 }
-                else{
+                else {
+                    console.log(`ffCall ${prop}: ${variant}`);
                     window.DATAFLUX_RUM && window.DATAFLUX_RUM.addAction('FeatBit Call FFs', {
                         FeatBitProject: window.featbitProject,
                         FeatBitEnv: window.featbitEnv,
                         FeatBitUserInfo: window.currentFFUser,
-                        FeatBitFeatureFlagKey: prop,
-                        FeatBitFeatureFlagVariant: variant,
+                        FeatBitFFVariant: '' + variant,
+                        FeatBitFFKey: prop,
                     });
                 }
 

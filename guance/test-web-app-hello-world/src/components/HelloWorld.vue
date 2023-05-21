@@ -32,8 +32,10 @@
     </ul>
     <h3>Guance & FeatBit</h3>
     <ul>
-      <li v-if="featBitStore.flags['feature-a']== true"><a @click="sendAction" style="cursor: pointer;" rel="noopener">Feature A</a></li>
-      <li v-if="featBitStore.flags['feature-b']== true"><a @click="sendAction" style="cursor: pointer;" rel="noopener">Feature B</a></li>
+      <li v-if="featBitStore.flags['feature-a'] == true"><a @click="sendAction" style="cursor: pointer;"
+          rel="noopener">Feature A</a></li>
+      <li v-if="featBitStore.flags['feature-b'] == true"><a @click="sendAction" style="cursor: pointer;"
+          rel="noopener">Feature B</a></li>
     </ul>
   </div>
 </template>
@@ -53,27 +55,7 @@ export default {
   methods: {
     // eslint-disable-next-line
     sendAction(event) {
-      if (window.DATAFLUX_RUM)
-        console.log(window.DATAFLUX_RUM)
-      const user = window.DATAFLUX_RUM.getUser();
-      console.log(user)
-      window.DATAFLUX_RUM && window.DATAFLUX_RUM.addAction('featbit feature flag service', {
-        ffType: "boolean",
-        ffKey: "ff-test",
-        ffEnv: "development",
-        ffProject: "test-web-app",
-        ffVariant: true,
-        ffUser: {
-          id: "1234567890",
-          name: "1234567890",
-          customized: [
-            {
-              key: "test",
-              value: "test value"
-            }
-          ]
-        }
-      });
+      
     }
   }
 }
