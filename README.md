@@ -1,2 +1,3 @@
 # featbit-observability-integrations
-Trial project to integration FeatBit to DataDog, Guance, etc.
+
+Trial project of integrating FeatBit to DataDog, Guance, etc.
