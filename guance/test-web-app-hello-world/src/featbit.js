@@ -2,6 +2,16 @@ import fbClient from "featbit-js-client-sdk";
 import { defineStore } from 'pinia'
 
 export const flagsDefaultValues = {
+    "feature-a": false,
+    "feature-b": false,
+}
+
+export const flagsTrackKeysValues = {
+    "feature-a": true,
+    "feature-b": true,
+}
+
+export const flagsTrackActionValues = {
     "feature-a": true,
     "feature-b": true,
 }
@@ -14,18 +24,15 @@ export const createFlagsProxy = (ffsUpdate = false) => {
             if (typeof prop === 'string' && !prop.startsWith('__v_')) {
                 var variant = fbClient.variation(prop, flagsDefaultValues[prop] || '');
 
-                if (ffsUpdate === true) {
-                    window.DATAFLUX_RUM && window.DATAFLUX_RUM.addAction('FeatBit Update FFs', {
-                        FeatBitProject: window.featbitProject,
-                        FeatBitEnv: window.featbitEnv,
-                        FeatBitUserInfo: window.currentFFUser,
-                        FeatBitFFVariant: '' + variant,
-                        FeatBitFFKey: prop ,
-                    });
-                    console.log(`ffUpdate ${prop}: ${variant}`);
+                if (ffsUpdate === true && variant) {
+                    if (flagsTrackKeysValues[prop] && flagsTrackKeysValues[prop] === variant) {
+                        window.DATAFLUX_RUM && window.DATAFLUX_RUM.addRumGlobalContext('track-ff-' + prop, variant);
+                        context = window.DATAFLUX_RUM && DATAFLUX_RUM.getRumGlobalContext();
+                        console.log(context);
+                    }
                 }
-                else {
-                    console.log(`ffCall ${prop}: ${variant}`);
+
+                if (flagsTrackActionValues[prop] && flagsTrackActionValues[prop] === variant) {
                     window.DATAFLUX_RUM && window.DATAFLUX_RUM.addAction('FeatBit Call FFs', {
                         FeatBitProject: window.featbitProject,
                         FeatBitEnv: window.featbitEnv,
@@ -33,8 +40,8 @@ export const createFlagsProxy = (ffsUpdate = false) => {
                         FeatBitFFVariant: '' + variant,
                         FeatBitFFKey: prop,
                     });
+                    console.log(`ffCall ${prop}: ${variant}`);
                 }
-
                 return variant
             }
             return '';

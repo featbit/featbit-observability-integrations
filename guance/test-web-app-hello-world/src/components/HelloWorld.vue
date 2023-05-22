@@ -32,9 +32,9 @@
     </ul>
     <h3>Guance & FeatBit</h3>
     <ul>
-      <li v-if="featBitStore.flags['feature-a'] == true"><a @click="sendAction" style="cursor: pointer;"
+      <li v-if="featBitStore.flags['feature-a'] == true"><a @click="sendAction('feature-a')" style="cursor: pointer;"
           rel="noopener">Feature A</a></li>
-      <li v-if="featBitStore.flags['feature-b'] == true"><a @click="sendAction" style="cursor: pointer;"
+      <li v-if="featBitStore.flags['feature-b'] == true"><a @click="sendAction('feature-b')" style="cursor: pointer;"
           rel="noopener">Feature B</a></li>
     </ul>
   </div>
@@ -53,9 +53,12 @@ export default {
     }
   },
   methods: {
-    // eslint-disable-next-line
+   /* eslint-disable */
     sendAction(event) {
-      
+      console.log(event);
+      var context = window.DATAFLUX_RUM && window.DATAFLUX_RUM.getRumGlobalContext();
+      if (context)
+        console.log(context);
     }
   }
 }
