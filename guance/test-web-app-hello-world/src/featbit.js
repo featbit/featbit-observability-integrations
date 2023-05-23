@@ -27,8 +27,7 @@ export const createFlagsProxy = (ffsUpdate = false) => {
                 if (ffsUpdate === true && variant) {
                     if (flagsTrackKeysValues[prop] && flagsTrackKeysValues[prop] === variant) {
                         window.DATAFLUX_RUM && window.DATAFLUX_RUM.addRumGlobalContext('track-ff-' + prop, variant);
-                        context = window.DATAFLUX_RUM && DATAFLUX_RUM.getRumGlobalContext();
-                        console.log(context);
+                        console.log(window.DATAFLUX_RUM && DATAFLUX_RUM.getRumGlobalContext());
                     }
                 }
 
