@@ -1,9 +1,10 @@
 using System.Diagnostics;
-using System.Reflection.PortableExecutable;
-using OpenTelemetry.Exporter;
+using FeatBit.Sdk.Server;
+using FeatBit.Sdk.Server.Options;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using OpenTelemetryApm;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,14 +15,32 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+string openTelemetryServiceName = "OpenTelemetryAPM";
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(builder => builder
-        .AddService(serviceName: "OpenTelemetryAPM"))
+        .AddService(serviceName: openTelemetryServiceName))
     .WithTracing(builder => builder
         .AddAspNetCoreInstrumentation()
         .AddConsoleExporter()
-            .AddOtlpExporter());
+        .AddOtlpExporter())
+    .WithMetrics(builder => builder
+        .AddAspNetCoreInstrumentation()
+        .AddConsoleExporter()
+        .AddOtlpExporter());
+
+// Add and Initilize Singleton FeatBit Service
+var fbClient = new FbClient(new FbOptionsBuilder("z4nZw2HYDkCGnB09R12TnAKIvcqEmwcUK-2mWFtGURaQ")
+                                    .Event(new Uri("https://featbit-tio-eu-eval.azurewebsites.net"))
+                                    .Steaming(new Uri("wss://featbit-tio-eu-eval.azurewebsites.net"))
+                                    .Build());
+if (fbClient.Initialized)
+{
+    builder.Services.AddSingleton(fbClient);
+    builder.Services.AddSingleton<IOtelFeatBitClient, OtelFeatBitClient>();
+}
+else
+    throw new Exception("FeatBit Client not initialized");
+
 
 var app = builder.Build();
 
