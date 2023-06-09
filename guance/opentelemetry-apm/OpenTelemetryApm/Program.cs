@@ -5,6 +5,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using OpenTelemetryApm;
+using OpenTelemetry.Logs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,18 @@ builder.Services.AddOpenTelemetry()
         .AddAspNetCoreInstrumentation()
         .AddConsoleExporter()
         .AddOtlpExporter());
+
+var logger = LoggerFactory.Create(builder =>
+{
+    builder.AddOpenTelemetry(options =>
+    {
+        options.AddConsoleExporter();
+        // add opentelemetry otel log exporter - not stable yet
+        // https://github.com/open-telemetry/opentelemetry-dotnet/tree/main/src/OpenTelemetry.Exporter.OpenTelemetryProtocol#enable-log-exporter
+
+    });
+}).CreateLogger("Program");
+
 
 // Add and Initilize Singleton FeatBit Service
 var fbClient = new FbClient(new FbOptionsBuilder("z4nZw2HYDkCGnB09R12TnAKIvcqEmwcUK-2mWFtGURaQ")

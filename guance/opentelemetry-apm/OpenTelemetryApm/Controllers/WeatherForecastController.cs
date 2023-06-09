@@ -26,6 +26,8 @@ namespace OpenTelemetryApm.Controllers
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+            _logger.LogInformation("WeatherForecastController:Get");
+
             var user = FbUser.Builder("user-key-00000000000001").Name("user-00000000000001").Build();
             var variation = _client.BoolVariation(user, "feature-a");
             if (variation == true)
